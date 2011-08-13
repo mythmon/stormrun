@@ -3,6 +3,7 @@ from types import MethodType
 import pygame
 
 from stormrun.util import Effect
+from stormrun.physics import Vector
 
 class Controller(Effect):
 
@@ -12,17 +13,20 @@ class Controller(Effect):
 
     @staticmethod
     def tick(self, target, t):
-        ax, ay = 0, 0
+        f = Vector()
 
         if self.keys.get(pygame.K_UP, False):
-            ay -= 1
+            f.y -= 1
         if self.keys.get(pygame.K_DOWN, False):
-            ay += 1
+            f.y += 1
         if self.keys.get(pygame.K_LEFT, False):
-            ax -= 1
+            f.x -= 1
         if self.keys.get(pygame.K_RIGHT, False):
-            ax += 1
+            f.x += 1
 
-        target.apply_force(x=ax, y=ay)
+        if f.m > 1:
+            f.m = 1
+
+        target.apply_force(f)
 
         self.orig_tick(t)

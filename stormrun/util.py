@@ -1,9 +1,11 @@
 from types import MethodType
 
-def dirty_property(real_var, if_dirty, to_dirty=None):
+def dirty_property(real_var, if_dirty, to_dirty=None, to_update=None):
 
     if not to_dirty:
         to_dirty = []
+    if not to_update:
+        to_update = []
 
     def fget(self):
         v = self.__getattribute__(real_var)
@@ -14,6 +16,9 @@ def dirty_property(real_var, if_dirty, to_dirty=None):
 
     def fset(self, value):
         self.__setattr__(real_var, value)
+        for attr in to_update:
+            # This will update partner values
+            self.__getattribute__(attr)
         for dirt in to_dirty:
             self.__setattr__(dirt, None)
 

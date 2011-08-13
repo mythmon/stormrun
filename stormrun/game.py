@@ -5,7 +5,7 @@ import sys
 import pygame
 from pygame import Rect, Color
 
-from stormrun.physics import Vector
+from stormrun.physics import Vector, Drag
 from stormrun.ui import Box
 from stormrun.control import Controller
 
@@ -15,8 +15,9 @@ def main():
     clock = pygame.time.Clock()
     keys = {}
 
-    box = Box(Vector(100, 240), Vector(1, -1))
+    box = Box(Vector(100, 240))
     Controller(keys).apply(box)
+    Drag(0.2).apply(box)
 
     while True:
         # tick
