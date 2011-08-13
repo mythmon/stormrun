@@ -5,39 +5,29 @@ import sys
 import pygame
 from pygame import Rect, Color
 
+from stormrun.physics import Vector
+from stormrun.ui import Box
+from stormrun.control import Controller
+
 def main():
     pygame.init()
     surface = pygame.display.set_mode((640, 480))
     clock = pygame.time.Clock()
     keys = {}
 
-    x, y = 320, 240
-    vx, vy = 0, 0
-    ax, ay = 0, 0
+    box = Box(Vector(100, 240), Vector(1, -1))
+    Controller(keys).apply(box)
 
     while True:
         # tick
-        ax, ay = 0, 0
 
-        drag
-
-        if keys.get(pygame.K_UP, False):
-            ay -= 1
-        if keys.get(pygame.K_DOWN, False):
-            ay += 1
-        if keys.get(pygame.K_LEFT, False):
-            ax -= 1
-        if keys.get(pygame.K_RIGHT, False):
-            ax += 1
-
-        vx, vy = vx + ax, vy + ay
-        x, y = x + vx, y + vy
+        box.tick(clock.get_time())
 
         # Blank the screen
-        surface.fill((0,0,0))
+        surface.fill((32,32,32))
 
         # draw
-        pygame.draw.rect(surface, Color(255,0,0), Rect(x, y, 10, 10))
+        box.draw(surface)
 
         pygame.display.flip()
 

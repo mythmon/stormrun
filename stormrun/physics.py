@@ -31,11 +31,22 @@ class Vector(object):
 
 class PhysicsObject(object):
 
-    def __init__(self, pos, vel):
+    def __init__(self, pos, vel=None):
         self.pos = pos
-        self.vel = vel
-        self.accel = Vector.zero
-        self.forces = []
+        self.vel = vel if vel else Vector(0, 0)
+        self.accel = Vector(0, 0)
+        self.effects = []
 
     def tick(self, t):
-        self
+        self.vel += self.accel
+        self.pos += self.vel
+
+        self.accel = Vector(0, 0)
+
+    def apply_force(self, force=None, x=None, y=None):
+        if force:
+            self.accel += force
+        if x:
+            self.accel.x += x
+        if y:
+            self.accel.y += y

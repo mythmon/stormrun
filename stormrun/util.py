@@ -1,3 +1,5 @@
+from types import MethodType
+
 def dirty_property(real_var, if_dirty, to_dirty=None):
 
     if not to_dirty:
@@ -16,3 +18,17 @@ def dirty_property(real_var, if_dirty, to_dirty=None):
             self.__setattr__(dirt, None)
 
     return property(fget, fset)
+
+
+class Effect(object):
+
+    def apply(self, target):
+        self.orig_tick = target.tick
+        target.tick = MethodType(self.monkey_patch(target), target, target.__class__)
+
+    def monkey_patch(self, target):
+
+        def new_tick(monkey_self, *args, **kwargs):
+            self.tick(self, monkey_self, *args, **kwargs)
+
+        return new_tick
