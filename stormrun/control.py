@@ -1,7 +1,7 @@
 from pyglet.window import key
 
 from stormrun.util import Effect
-from stormrun.physics import Vector
+from stormrun.geometry import Vector
 
 class Controller(Effect):
 

@@ -4,7 +4,8 @@ import sys
 
 import pyglet
 
-from stormrun.physics import Vector, Drag
+from stormrun.physics import Drag
+from stormrun.geometry import Vector
 from stormrun.ui import Box
 from stormrun.control import Controller
 
