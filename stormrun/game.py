@@ -26,7 +26,7 @@ keys = {}
 
 box = Box(Vector(100, 240))
 Controller(keys).apply(box)
-Drag(0.2).apply(box)
+Drag(0.02).apply(box)
 
 fps_display = pyglet.clock.ClockDisplay()
 

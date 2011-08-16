@@ -13,7 +13,7 @@ class Controller(Effect):
     def tick(self, target, t):
         f = Vector()
 
-        thrust = 0.5
+        thrust = 0.3
 
         if self.keys.get(key.UP, False):
             f.y += thrust
