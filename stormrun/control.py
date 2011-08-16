@@ -1,6 +1,4 @@
-from types import MethodType
-
-import pygame
+from pyglet.window import key
 
 from stormrun.util import Effect
 from stormrun.physics import Vector
@@ -15,17 +13,19 @@ class Controller(Effect):
     def tick(self, target, t):
         f = Vector()
 
-        if self.keys.get(pygame.K_UP, False):
-            f.y -= 1
-        if self.keys.get(pygame.K_DOWN, False):
-            f.y += 1
-        if self.keys.get(pygame.K_LEFT, False):
-            f.x -= 1
-        if self.keys.get(pygame.K_RIGHT, False):
-            f.x += 1
+        thrust = 0.5
 
-        if f.m > 1:
-            f.m = 1
+        if self.keys.get(key.UP, False):
+            f.y += thrust
+        if self.keys.get(key.DOWN, False):
+            f.y -= thrust
+        if self.keys.get(key.LEFT, False):
+            f.x -= thrust
+        if self.keys.get(key.RIGHT, False):
+            f.x += thrust
+
+        if f.m > thrust:
+            f.m = thrust
 
         target.apply_force(f)
 

@@ -2,47 +2,52 @@
 
 import sys
 
-import pygame
-from pygame import Rect, Color
+import pyglet
 
 from stormrun.physics import Vector, Drag
 from stormrun.ui import Box
 from stormrun.control import Controller
 
-def main():
-    pygame.init()
-    surface = pygame.display.set_mode((640, 480))
-    clock = pygame.time.Clock()
-    keys = {}
+tickers = []
+drawers = []
 
-    box = Box(Vector(100, 240))
-    Controller(keys).apply(box)
-    Drag(0.2).apply(box)
+def tick(t):
+    for obj in tickers:
+        obj.tick(t)
 
-    while True:
-        # tick
+window = pyglet.window.Window(style='dialog')
 
-        box.tick(clock.get_time())
+# Clear the screen, to prevent junk on frame 1
+window.clear()
+window.flip()
 
-        # Blank the screen
-        surface.fill((32,32,32))
+keys = {}
 
-        # draw
-        box.draw(surface)
+box = Box(Vector(100, 240))
+Controller(keys).apply(box)
+Drag(0.2).apply(box)
 
-        pygame.display.flip()
+fps_display = pyglet.clock.ClockDisplay()
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                keys[event.key] = True
-            elif event.type == pygame.KEYUP:
-                keys[event.key] = False
+pyglet.clock.schedule_interval(tick, 1/60.0)
 
-        clock.tick(30)
+drawers.extend([box, fps_display])
+tickers.append(box)
 
+@window.event
+def on_draw():
+    window.clear()
 
-if __name__ == '__main__':
-    main()
+    for obj in drawers:
+        obj.draw()
+
+@window.event
+def on_key_press(symbol, modifers):
+    keys[symbol] = True
+
+@window.event
+def on_key_release(symbol, modifers):
+    keys[symbol] = False
+
+pyglet.app.run()
+

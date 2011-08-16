@@ -1,9 +1,12 @@
-import pygame
-from pygame import Rect, Color
+import pyglet
 
 from stormrun.physics import PhysicsObject
 
 class Box(PhysicsObject):
 
-    def draw(self, surface):
-        pygame.draw.rect(surface, (255, 0, 0), Rect(self.pos.x, self.pos.y, 10, 10))
+    def draw(self):
+        pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
+            ('v2f', (self.pos.x - 5, self.pos.y - 5,
+                     self.pos.x - 5, self.pos.y + 5,
+                     self.pos.x + 5, self.pos.y + 5,
+                     self.pos.x + 5, self.pos.y - 5)))
