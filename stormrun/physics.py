@@ -30,7 +30,7 @@ class PhysicsObject(object):
 class Drag(Effect):
 
     def __init__(self, cons):
-        super(Effect, self).__init__()
+        super(Drag, self).__init__()
         self.cons = cons
 
     @staticmethod

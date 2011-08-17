@@ -1,8 +1,8 @@
 #!/usr/bin/python2
-
 import sys
 
 import pyglet
+from pyglet.gl import *
 
 from stormrun.physics import Drag
 from stormrun.geometry import Vector
@@ -16,7 +16,9 @@ def tick(t):
     for obj in tickers:
         obj.tick(t)
 
-window = pyglet.window.Window(style='dialog')
+window = pyglet.window.Window(style='dialog', vsync=True)
+
+glEnable(GL_BLEND)
 
 # Clear the screen, to prevent junk on frame 1
 window.clear()
@@ -24,16 +26,17 @@ window.flip()
 
 keys = {}
 
-box = Box(Vector(100, 240))
-Controller(keys).apply(box)
+box = Box(Vector(window.width/2, window.height/2))
+Controller(keys, 0.3).apply(box)
 Drag(0.02).apply(box)
 
+drawers.append(box)
+tickers.append(box)
+
 fps_display = pyglet.clock.ClockDisplay()
+drawers.append(fps_display)
 
 pyglet.clock.schedule_interval(tick, 1/60.0)
-
-drawers.extend([box, fps_display])
-tickers.append(box)
 
 @window.event
 def on_draw():
