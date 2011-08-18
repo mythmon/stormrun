@@ -1,3 +1,5 @@
+from pyglet.gl import *
+
 from stormrun.geometry import Vector
 
 
@@ -5,7 +7,7 @@ class Camera(object):
 
     def __init__(self, target=None, pos=None, size=None):
         self.target = target
-        self.pos = target.pos if target else Vector()
+        self.pos = target.pos if target else pos if pos else Vector()
         self.halfsize = size/2 if size else Vector(320,240)
 
     def follow(self, target):
@@ -19,9 +21,13 @@ class Camera(object):
         new_p = p + self.halfsize - self.pos
         return new_p
 
-    def hittest(self, p):
-        diff = self.pos - p
-        return abs(diff.x) < self.halfsize.x and abs(diff.y) < self.halfsize.y
+    def focus(self):
+        p = self.halfsize - self.pos
+        glTranslatef(p.x, p.y, 0)
+
+    @property
+    def size(self):
+        return self.halfsize * 2
 
     @property
     def left(self):

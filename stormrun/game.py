@@ -6,8 +6,9 @@ from pyglet.gl import *
 
 from stormrun.physics import Drag
 from stormrun.geometry import Vector
-from stormrun.ui import Box
+from stormrun.ui import Box, Starfield
 from stormrun.control import Controller
+from stormrun.camera import Camera
 
 tickers = []
 drawers = []
@@ -29,21 +30,29 @@ keys = {}
 box = Box(Vector(window.width/2, window.height/2))
 Controller(keys, 0.3).apply(box)
 Drag(0.02).apply(box)
-
 drawers.append(box)
 tickers.append(box)
 
-fps_display = pyglet.clock.ClockDisplay()
-drawers.append(fps_display)
+camera = Camera(box)
+tickers.append(camera)
+drawers.append(Starfield(camera))
 
+fps_display = pyglet.clock.ClockDisplay()
 pyglet.clock.schedule_interval(tick, 1/60.0)
 
 @window.event
 def on_draw():
     window.clear()
 
+    glPushMatrix()
+    camera.focus()
+
     for obj in drawers:
         obj.draw()
+
+    glPopMatrix()
+
+    fps_display.draw()
 
 @window.event
 def on_key_press(symbol, modifers):
