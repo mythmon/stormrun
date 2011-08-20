@@ -39,8 +39,8 @@ class Camera(object):
 
     @property
     def top(self):
-        return self.pos.y - self.halfsize.y
+        return self.pos.y + self.halfsize.y
 
     @property
     def bottom(self):
-        return self.pos.y + self.halfsize.y
+        return self.pos.y - self.halfsize.y

@@ -28,9 +28,17 @@ class Starfield(object):
 
         verts = []
         colors = []
-        step = int(100/density)
-        for y in xrange(int(camera.size.y), step):
-            for x in xrange(int(camera.size.x), step):
+        self.step = int(100/density)
+
+        left = int(-camera.halfsize.x)
+        right = int(camera.halfsize.x)
+        top = int(camera.halfsize.y)
+        bottom = int(-camera.halfsize.y)
+
+        print(repr([top, right, bottom, left]))
+
+        for y in xrange(bottom, top + self.step, self.step):
+            for x in xrange(left, right + self.step, self.step):
                 verts += [x, y]
                 colors += [0.5, 0.5, 0.5]
 
@@ -40,7 +48,11 @@ class Starfield(object):
 
     def draw(self):
         glPushMatrix()
-        trans_p = self.camera.pos - self.camera.halfsize
+        trans_p = self.camera.pos - self.camera.size
+
+        trans_p.x -= trans_p.x % self.step
+        trans_p.y -= trans_p.y % self.step
+
         glTranslatef(trans_p.x, trans_p.y, 0)
         self.vertex_list.draw(GL_POINTS)
         glPopMatrix()

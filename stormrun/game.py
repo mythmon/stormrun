@@ -27,7 +27,7 @@ window.flip()
 
 keys = {}
 
-box = Box(Vector(window.width/2, window.height/2))
+box = Box(Vector())
 Controller(keys, 0.3).apply(box)
 Drag(0.02).apply(box)
 drawers.append(box)
@@ -35,7 +35,7 @@ tickers.append(box)
 
 camera = Camera(box)
 tickers.append(camera)
-drawers.append(Starfield(camera))
+drawers.append(Starfield(camera, density=2))
 
 fps_display = pyglet.clock.ClockDisplay()
 pyglet.clock.schedule_interval(tick, 1/60.0)
