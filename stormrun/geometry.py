@@ -39,8 +39,12 @@ class Vector(object):
         else:
             return Vector(a=self.a, m=self.m * other)
 
-    def __repr__(self):
+    def __str__(self):
         return '<{x}, {y}>'.format(x=self.x, y=self.y)
+
+    def __format__(self, format_spec):
+        format_str = '<{x:%s}, {y:%s}>' % (format_spec, format_spec)
+        return format_str.format(x=float(self.x), y=float(self.y))
 
     def update_polar(self):
         self._a = math.atan2(self._y, self._x)
@@ -85,6 +89,10 @@ class Vector(object):
         self._a = value % (math.pi * 2)
         self._x = None
         self._y = None
+
+    @property
+    def a_degrees(self):
+        return self.a / math.pi * 180
 
     @property
     def m(self):

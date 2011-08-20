@@ -3,18 +3,24 @@ import sys
 
 import pyglet
 from pyglet.gl import *
+from pyglet.window import key
 
 from stormrun.physics import Drag
 from stormrun.geometry import Vector
-from stormrun.ui import Box, Starfield
-from stormrun.control import Controller
+from stormrun.ui import Ship, Starfield
+from stormrun.control import KeyboardControls, VarTweaker
 from stormrun.camera import Camera
 
-tickers = []
-drawers = []
+class World(object):
+    pass
+
+world = World()
+
+world.tickers = []
+world.drawers = []
 
 def tick(t):
-    for obj in tickers:
+    for obj in world.tickers:
         obj.tick(t)
 
 window = pyglet.window.Window(1024, 768, style='dialog', vsync=True)
@@ -27,18 +33,28 @@ window.flip()
 
 keys = {}
 
-box = Box(Vector())
-Controller(keys, 0.3).apply(box)
-Drag(0.02).apply(box)
-drawers.append(box)
-tickers.append(box)
+ship = Ship(world, Vector())
+world.drawers.append(ship)
+world.tickers.append(ship)
 
-camera = Camera(box, size=Vector(window.width, window.height))
-tickers.append(camera)
-drawers.append(Starfield(camera, density=2))
+kb = KeyboardControls(keys, thrust=0.5)
+kb.apply(ship)
+VarTweaker(keys, 'thrust', 0.01, up_key=key.Q, down_key=key.A).apply(kb)
+
+drag = Drag(0.03)
+drag.apply(ship)
+VarTweaker(keys, 'cons', 0.001, up_key=key.W, down_key=key.S).apply(drag)
+
+camera = Camera(ship, size=Vector(window.width, window.height))
+world.tickers.append(camera)
+world.drawers.append(Starfield(camera, density=2))
 
 fps_display = pyglet.clock.ClockDisplay()
 pyglet.clock.schedule_interval(tick, 1/60.0)
+
+ship_stats = pyglet.text.Label('', font_name='Mono', font_size=10,
+        color=(255, 255, 255, 127), x=window.width-10, y=10,
+        anchor_x='right', anchor_y='bottom')
 
 @window.event
 def on_draw():
@@ -47,11 +63,13 @@ def on_draw():
     glPushMatrix()
     camera.focus()
 
-    for obj in drawers:
+    for obj in world.drawers:
         obj.draw()
 
     glPopMatrix()
 
+    ship_stats.text = 'Pos: {0:+.1f}, Vel: {1:+.1f}'.format(ship.pos, ship.vel)
+    ship_stats.draw()
     fps_display.draw()
 
 @window.event
@@ -63,4 +81,3 @@ def on_key_release(symbol, modifers):
     keys[symbol] = False
 
 pyglet.app.run()
-

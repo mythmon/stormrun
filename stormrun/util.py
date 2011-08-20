@@ -28,6 +28,7 @@ def dirty_property(real_var, if_dirty, to_dirty=None, to_update=None):
 class Effect(object):
 
     def apply(self, target):
+        self.target = target
         self.orig_tick = target.tick
         target.tick = MethodType(self.monkey_patch(target), target, target.__class__)
 
