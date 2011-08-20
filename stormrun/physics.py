@@ -29,6 +29,8 @@ class PhysicsObject(object):
 
 class Drag(Effect):
 
+    cutoff = 0.05
+
     def __init__(self, cons):
         super(Drag, self).__init__()
         self.cons = cons
@@ -41,6 +43,8 @@ class Drag(Effect):
 
             if drag.m > target.vel.m:
                 drag.m = target.vel.m
+            if drag.m < self.cutoff:
+                drag.m = self.cutoff
 
             target.apply_force(drag)
 
