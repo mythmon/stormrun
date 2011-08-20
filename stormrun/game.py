@@ -17,7 +17,7 @@ def tick(t):
     for obj in tickers:
         obj.tick(t)
 
-window = pyglet.window.Window(style='dialog', vsync=True)
+window = pyglet.window.Window(1024, 768, style='dialog', vsync=True)
 
 glEnable(GL_BLEND)
 
@@ -33,7 +33,7 @@ Drag(0.02).apply(box)
 drawers.append(box)
 tickers.append(box)
 
-camera = Camera(box)
+camera = Camera(box, size=Vector(window.width, window.height))
 tickers.append(camera)
 drawers.append(Starfield(camera, density=2))
 

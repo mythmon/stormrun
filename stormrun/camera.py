@@ -8,7 +8,7 @@ class Camera(object):
     def __init__(self, target=None, pos=None, size=None):
         self.target = target
         self.pos = target.pos if target else pos if pos else Vector()
-        self.halfsize = size/2 if size else Vector(320,240)
+        self.halfsize = size * 0.5 if size else Vector(320,240)
 
     def follow(self, target):
         self.target = target
