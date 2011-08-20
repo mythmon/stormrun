@@ -14,15 +14,12 @@ class Vector(object):
         self._y = None
 
         if m is not None or a is not None:
-            self._a = a
-            self._m = m
+            self._a = a if a else 0
+            self._m = m if m else 0
 
         elif x is not None or y is not None:
-            self._x = x
-            self._y = y
-            # update a and m
-            self.a
-            self.m
+            self._x = x if x else 0
+            self._y = y if y else 0
 
         if self._x is None:
             self._x = 0
