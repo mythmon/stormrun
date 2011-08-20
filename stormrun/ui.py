@@ -2,6 +2,7 @@ import pyglet
 from pyglet.gl import *
 
 from stormrun.physics import PhysicsObject
+from stormrun.geometry import Vector
 
 class Box(PhysicsObject):
 
@@ -35,8 +36,6 @@ class Starfield(object):
         top = int(camera.halfsize.y)
         bottom = int(-camera.halfsize.y)
 
-        print(repr([top, right, bottom, left]))
-
         for y in xrange(bottom, top + self.step, self.step):
             for x in xrange(left, right + self.step, self.step):
                 verts += [x, y]
@@ -48,11 +47,11 @@ class Starfield(object):
 
     def draw(self):
         glPushMatrix()
-        trans_p = self.camera.pos - self.camera.size
+        trans_p = self.camera.pos
 
-        trans_p.x -= trans_p.x % self.step
-        trans_p.y -= trans_p.y % self.step
+        x = int((trans_p.x // self.step) * self.step)
+        y = int((trans_p.y // self.step) * self.step)
 
-        glTranslatef(trans_p.x, trans_p.y, 0)
+        glTranslatef(x, y, 0)
         self.vertex_list.draw(GL_POINTS)
         glPopMatrix()

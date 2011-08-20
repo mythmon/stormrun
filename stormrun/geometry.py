@@ -21,13 +21,10 @@ class Vector(object):
             self._x = x if x else 0
             self._y = y if y else 0
 
-        if self._x is None:
+        else:
             self._x = 0
-        if self._y is None:
             self._y = 0
-        if self._a is None:
             self._a = 0
-        if self._m is None:
             self._m = 0
 
     def __add__(self, other):

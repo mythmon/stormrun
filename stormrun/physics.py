@@ -38,8 +38,9 @@ class Drag(Effect):
     @staticmethod
     def tick(self, target, t):
         if target.vel.m > 0:
-            drag = Vector(a=target.vel.a)
-            drag.m = (-1/2) * (target.vel.m ** 2) * self.cons
+            drag = Vector(
+                a=target.vel.a + math.pi,
+                m = (0.5) * (target.vel.m ** 2) * self.cons)
 
             if drag.m > target.vel.m:
                 drag.m = target.vel.m
