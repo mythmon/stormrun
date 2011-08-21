@@ -19,6 +19,7 @@ class Ship(PhysicsObject):
 
         self.draw_ang = self.vel.a_degrees
         self.shot_clock = 0
+        self.thrust = 0.3
 
     def draw(self):
         if self.vel.m > 0.1:
@@ -38,12 +39,26 @@ class Ship(PhysicsObject):
         elif self.shot_clock > 0:
             self.shot_clock -= t
 
-    def thrust(self, f):
+    def move_in_dir(self, f):
+        f.a
+        f.m = self.thrust
+        self.apply_force(f)
+
+    def move(self, f):
+        f.a
+        f.m = f.m * self.thrust
         self.apply_force(f)
 
     def fire(self):
+        vec = Vector()
+        vec.m = 1
+        vec.a = self.draw_ang / 180 * math.pi
+
+        self.fire_in_dir(vec)
+
+    def fire_in_dir(self, vec):
         if self.shot_clock <= 0:
-            v = Vector(a=self.vel.a, m=10)
+            v = Vector(a=vec.a, m=10)
             l = Laser(self.world, pos=self.pos, vel=v)
             self.world.drawers.append(l)
             self.world.tickers.append(l)

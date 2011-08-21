@@ -8,7 +8,7 @@ from pyglet.window import key
 from stormrun.physics import Drag
 from stormrun.geometry import Vector
 from stormrun.ui import Ship, Starfield
-from stormrun.control import KeyboardControls, VarTweaker
+from stormrun.control import KeyboardControls, VarTweaker, JoystickControls
 from stormrun.camera import Camera
 
 class World(object):
@@ -37,7 +37,7 @@ ship = Ship(world, Vector())
 world.drawers.append(ship)
 world.tickers.append(ship)
 
-kb = KeyboardControls(keys, thrust=0.5)
+kb = JoystickControls()
 kb.apply(ship)
 VarTweaker(keys, 'thrust', 0.01, up_key=key.Q, down_key=key.A).apply(kb)
 
