@@ -1,4 +1,4 @@
-from pyglet.window import key
+from pyglet.window import key, mouse
 
 import better_exchook
 better_exchook.install()
@@ -10,27 +10,29 @@ from stormrun.geometry import Vector
 
 class KeyboardControls(Effect):
 
-    def __init__(self, keys):
-        super(Effect, self).__init__()
-        self.keys = keys
+    def __init__(self, keys_status, mouse_status, *args, **kwargs):
+        super(Effect, self).__init__(*args, **kwargs)
+        self.key_status = keys_status
+        self.mouse_status = mouse_status
 
     @staticmethod
     def tick(self, target, *args, **kwargs):
         f = Vector()
 
-        if self.keys.get(key.UP, False):
+        if self.key_status.get(key.W, False):
             f.y += 1
-        if self.keys.get(key.DOWN, False):
+        if self.key_status.get(key.S, False):
             f.y -= 1
-        if self.keys.get(key.LEFT, False):
+        if self.key_status.get(key.A, False):
             f.x -= 1
-        if self.keys.get(key.RIGHT, False):
+        if self.key_status.get(key.D, False):
             f.x += 1
 
         if f.m > 0:
             target.move_in_dir(f)
 
-        if self.keys.get(key.SPACE, False):
+        print('controls: ' + repr(self.mouse_status))
+        if self.mouse_status.get(1, False):
             target.fire()
 
         self.orig_tick(*args, **kwargs)
@@ -38,8 +40,8 @@ class KeyboardControls(Effect):
 
 class VarTweaker(Effect):
 
-    def __init__(self, keys, var_str, incr, up_key, down_key):
-        self.keys = keys
+    def __init__(self, key_status, var_str, incr, up_key, down_key):
+        self.key_status = key_status
         self.var_str = var_str
         self.incr = incr
         self.up_key = up_key
@@ -48,9 +50,9 @@ class VarTweaker(Effect):
     @staticmethod
     def tick(self, target, *args, **kwargs):
         delta = 0
-        if self.keys.get(self.up_key, False):
+        if self.key_status.get(self.up_key, False):
             delta += 1
-        if self.keys.get(self.down_key, False):
+        if self.key_status.get(self.down_key, False):
             delta -= 1
 
         if delta != 0:
@@ -92,6 +94,10 @@ class JoystickControls(Effect):
 
         f = Vector(x, y)
         if f.m > 0.5:
-            target.fire_in_dir(f)
+            target.aim_in_dir(f)
+
+        trigger = SDL.SDL_JoystickGetAxis(self.js, 4) / 32768.0
+        if trigger > 0.5:
+            target.fire()
 
         self.orig_tick(*args, **kwargs)

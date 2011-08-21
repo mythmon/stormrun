@@ -31,19 +31,23 @@ glEnable(GL_BLEND)
 window.clear()
 window.flip()
 
-keys = {}
+key_status = {}
+mouse_status = {}
 
-ship = Ship(world, Vector())
+ship = Ship(0.3, world, pos=Vector())
 world.drawers.append(ship)
 world.tickers.append(ship)
 
-kb = JoystickControls()
+joy = JoystickControls()
+joy.apply(ship)
+kb = KeyboardControls(key_status, mouse_status)
 kb.apply(ship)
-VarTweaker(keys, 'thrust', 0.01, up_key=key.Q, down_key=key.A).apply(kb)
+VarTweaker(key_status, 'thrust', 0.01, up_key=key.I, down_key=key.K).apply(ship)
+VarTweaker(key_status, 'time_per_shot', 0.01, up_key=key.U, down_key=key.J).apply(ship)
 
 drag = Drag(0.03)
 drag.apply(ship)
-VarTweaker(keys, 'cons', 0.001, up_key=key.W, down_key=key.S).apply(drag)
+VarTweaker(key_status, 'cons', 0.001, up_key=key.O, down_key=key.L).apply(drag)
 
 camera = Camera(ship, size=Vector(window.width, window.height))
 world.tickers.append(camera)
@@ -74,10 +78,33 @@ def on_draw():
 
 @window.event
 def on_key_press(symbol, modifers):
-    keys[symbol] = True
+    key_status[symbol] = True
 
 @window.event
 def on_key_release(symbol, modifers):
-    keys[symbol] = False
+    key_status[symbol] = False
+
+@window.event
+def on_mouse_motion(x, y, dx, dy):
+    mouse_status['x'] = x
+    mouse_status['y'] = y
+    p =  Vector(x, y) - camera.halfsize
+    ship.aim_relative(p)
+
+@window.event
+def on_mouse_press(x, y, button, modifiers):
+    mouse_status[button] = True
+
+    print(repr(mouse_status))
+
+@window.event
+def on_mouse_release(x, y, button, modifiers):
+    mouse_status[button] = False
+
+    print(repr(mouse_status))
+
+@window.event
+def on_mouse_drag(x, y, dx, dy, button, modifiers):
+    on_mouse_motion(x, y, dx, dy)
 
 pyglet.app.run()
