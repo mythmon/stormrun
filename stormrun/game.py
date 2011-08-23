@@ -48,6 +48,6 @@ class World(object):
 
 
 if __name__ == '__main__':
-    engine = Engine()
+    engine = Engine(load_joystick=True)
     world = World(engine)
     pyglet.app.run()

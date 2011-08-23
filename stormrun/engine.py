@@ -19,8 +19,9 @@ class Engine(object):
     can be both event driver or polled.
     """
 
-    def __init__(self):
+    def __init__(self, load_joystick=False):
         self.init = False
+        self.load_joystick = load_joystick
 
         self.tickers = []
         self.drawers = {
@@ -32,7 +33,8 @@ class Engine(object):
 
         self.key_status = {}
         self.mouse_status = {}
-        self.joystick_status = {}
+        if load_joystick:
+            self.joystick_status = {}
 
         self.window = pyglet.window.Window(1024, 768, vsync=True)
         self.setup_gl()
@@ -61,10 +63,11 @@ class Engine(object):
         SDL to poll joysticks.  Should be called after pyglet's run_app
         function has been started.
         """
-        print("Loading SDL")
-        SDL.start()
-        SDL.SDL_Init(SDL.SDL_INIT_JOYSTICK)
-        print("Done loading SDL")
+        if self.load_joystick:
+            print("Loading SDL")
+            SDL.start()
+            SDL.SDL_Init(SDL.SDL_INIT_JOYSTICK)
+            print("Done loading SDL")
 
         self.camera = Camera(self)
         self.tickers.append(self.camera)
