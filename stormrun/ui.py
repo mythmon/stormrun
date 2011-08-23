@@ -9,8 +9,8 @@ from stormrun.geometry import Vector
 
 class Ship(PhysicsObject):
 
-    def __init__(self, thrust=0.3, *args, **kwargs):
-        super(Ship, self).__init__(*args, **kwargs)
+    def __init__(self, world, thrust=0.3, *args, **kwargs):
+        super(Ship, self).__init__(world, *args, **kwargs)
         self.body = pyglet.graphics.vertex_list(4,
             ('v2f/static', (12, 0, -6, 7.5, -3, 0, -6, -7.5)),
             ('c4f/static', (1, 1, 1, 0.5,
@@ -71,7 +71,7 @@ class Ship(PhysicsObject):
         if self.shot_clock <= 0:
             v = Vector(a=self.aim.a, m=10)
             l = Laser(self.world, v, pos=self.pos, vel=v+self.vel)
-            self.world.drawers.append(l)
+            self.world.drawers['foreground'].append(l)
             self.world.tickers.append(l)
             self.shot_clock = self.time_per_shot
 
@@ -101,7 +101,7 @@ class Laser(PhysicsObject):
         self.lifetime -= t
         if self.lifetime <= 0:
             self.world.tickers.remove(self)
-            self.world.drawers.remove(self)
+            self.world.drawers['foreground'].remove(self)
 
 
     def draw(self):

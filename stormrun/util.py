@@ -27,6 +27,9 @@ def dirty_property(real_var, if_dirty, to_dirty=None, to_update=None):
 
 class Effect(object):
 
+    def __init__(self, engine):
+        self.engine = engine
+
     def apply(self, target):
         self.target = target
         self.orig_tick = target.tick

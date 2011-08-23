@@ -6,9 +6,9 @@ from stormrun.geometry import Vector
 
 class PhysicsObject(object):
 
-    def __init__(self, world, pos, vel=None):
+    def __init__(self, world, pos=None, vel=None):
         self.world = world
-        self.pos = pos
+        self.pos = pos if pos else Vector()
         self.vel = vel if vel else Vector()
         self.accel = Vector()
         self.effects = []
@@ -33,8 +33,8 @@ class Drag(Effect):
     min_drag = 0.05
     min_vel = 0.1
 
-    def __init__(self, cons):
-        super(Drag, self).__init__()
+    def __init__(self, engine, cons, *args, **kwargs):
+        super(Drag, self).__init__(engine, *args, **kwargs)
         self.cons = cons
 
     @staticmethod

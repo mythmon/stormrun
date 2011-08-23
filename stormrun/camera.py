@@ -5,10 +5,10 @@ from stormrun.geometry import Vector
 
 class Camera(object):
 
-    def __init__(self, target=None, pos=None, size=None):
+    def __init__(self, engine, target=None, pos=None):
         self.target = target
         self.pos = target.pos if target else pos if pos else Vector()
-        self.halfsize = size * 0.5 if size else Vector(320,240)
+        self.halfsize = Vector(engine.window.width / 2, engine.window.height / 2)
 
     def follow(self, target):
         self.target = target
@@ -16,10 +16,6 @@ class Camera(object):
     def tick(self, t):
         if self.target:
             self.pos = self.target.pos
-
-    def transform(self, p):
-        new_p = p + self.halfsize - self.pos
-        return new_p
 
     def focus(self):
         p = self.halfsize - self.pos

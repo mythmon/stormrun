@@ -2,7 +2,6 @@ from pyglet.window import key, mouse
 
 import better_exchook
 better_exchook.install()
-
 import SDL
 
 from stormrun.util import Effect
@@ -10,10 +9,10 @@ from stormrun.geometry import Vector
 
 class KeyboardControls(Effect):
 
-    def __init__(self, keys_status, mouse_status, *args, **kwargs):
-        super(Effect, self).__init__(*args, **kwargs)
-        self.key_status = keys_status
-        self.mouse_status = mouse_status
+    def __init__(self, engine, *args, **kwargs):
+        super(KeyboardControls, self).__init__(engine, *args, **kwargs)
+        self.key_status = engine.key_status
+        self.mouse_status = engine.mouse_status
 
     @staticmethod
     def tick(self, target, *args, **kwargs):
@@ -31,9 +30,13 @@ class KeyboardControls(Effect):
         if f.m > 0:
             target.move_in_dir(f)
 
-        print('controls: ' + repr(self.mouse_status))
-        if self.mouse_status.get(1, False):
+        if self.mouse_status.get(mouse.LEFT, False):
             target.fire()
+
+        if 'x' in self.mouse_status and 'y' in self.mouse_status:
+            vec = Vector(self.mouse_status['x'], self.mouse_status['y'])
+            vec -= self.engine.camera.halfsize
+            target.aim_relative(vec)
 
         self.orig_tick(*args, **kwargs)
 
@@ -66,12 +69,8 @@ class VarTweaker(Effect):
 
 class JoystickControls(Effect):
 
-    def __init__(self):
-        print 'loading SDL'
-        SDL.start()
-        SDL.SDL_Init(SDL.SDL_INIT_JOYSTICK)
-        print 'SDL loaded'
-
+    def __init__(self, engine):
+        self.engine = engine
         self.js = SDL.SDL_JoystickOpen(0)
 
     @staticmethod
@@ -88,15 +87,15 @@ class JoystickControls(Effect):
             target.move(f)
 
         # Gun
-        x = SDL.SDL_JoystickGetAxis(self.js, 2) / 32768.0
-        y = SDL.SDL_JoystickGetAxis(self.js, 3) / 32768.0
+        x = SDL.SDL_JoystickGetAxis(self.js, 3) / 32768.0
+        y = SDL.SDL_JoystickGetAxis(self.js, 4) / 32768.0
         y = -y
 
         f = Vector(x, y)
         if f.m > 0.5:
             target.aim_in_dir(f)
 
-        trigger = SDL.SDL_JoystickGetAxis(self.js, 4) / 32768.0
+        trigger = SDL.SDL_JoystickGetAxis(self.js, 5) / 32768.0
         if trigger > 0.5:
             target.fire()
 
