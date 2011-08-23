@@ -1,7 +1,5 @@
 from pyglet.window import key, mouse
 
-import better_exchook
-better_exchook.install()
 import SDL
 
 from stormrun.util import Effect
