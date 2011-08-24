@@ -12,7 +12,7 @@ class World(object):
 
     def __init__(self, engine):
 
-        engine.world = self
+        engine.setup_hook.append(self)
 
         self.ship = Ship(engine, thrust=0.3)
         engine.drawers['foreground'].append(self.ship)

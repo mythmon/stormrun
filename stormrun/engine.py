@@ -46,6 +46,8 @@ class Engine(object):
             x=self.window.width / 2, y=self.window.height / 2,
             anchor_x='center', anchor_y='center'))
 
+        self.setup_hook = []
+
     def setup_gl(self):
         # Enable opacity
         glEnable(GL_BLEND)
@@ -68,7 +70,9 @@ class Engine(object):
         self.drawers['hud'].append(pyglet.clock.ClockDisplay())
         pyglet.clock.schedule_interval(self.tick, 1.0/60)
 
-        self.world.setup()
+        while self.setup_hook:
+            self.setup_hook.pop().setup()
+
         self.init = True
 
     def tick(self, t):
