@@ -1,15 +1,8 @@
-#import sys
-#
 import pyglet
 from pyglet.gl import *
-#from pyglet.window import key
-#
+
 import SDL
-#
-#from stormrun.physics import Drag
-#from stormrun.geometry import Vector
-#from stormrun.ui import Ship, Starfield
-#from stormrun.control import KeyboardControls, VarTweaker, JoystickControls
+
 from stormrun.camera import Camera
 
 
