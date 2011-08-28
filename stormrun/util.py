@@ -41,3 +41,31 @@ class Effect(object):
             self.tick(self, monkey_self, *args, **kwargs)
 
         return new_tick
+
+
+def flatten(li):
+    """
+    Given a list, potentially containing other lists, flatten the list.
+
+    >>> flatten([1, 2, 3, 4])
+    [1, 2, 3, 4]
+    >>> flatten([1, [2, 3], 4])
+    [1, 2, 3, 4]
+    >>> flatten([[1, 2], [3, [4]]])
+    [1, 2, 3, 4]
+    >>> flatten([1, [2, [3, [4]]]])
+    [1, 2, 3, 4]
+    """
+    flattened = []
+    try:
+        for o in li:
+            flattened.extend(flatten(o))
+    except TypeError:
+        return [li]
+
+    return flattened
+
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
