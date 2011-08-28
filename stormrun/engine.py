@@ -4,6 +4,7 @@ from pyglet.gl import *
 import SDL
 
 from stormrun.camera import Camera
+from stormrun.geometry import Vector
 
 
 class Engine(object):
@@ -23,13 +24,19 @@ class Engine(object):
             'hud': [],
             'preload': [],
         }
+        self.mousers = {
+            'press': [],
+            'release': [],
+            'move': [],
+            'drag': [],
+        }
 
         self.key_status = {}
         self.mouse_status = {}
         if load_joystick:
             self.joystick_status = {}
 
-        self.window = pyglet.window.Window(1024, 768, vsync=True)
+        self.window = pyglet.window.Window(1024, 768, vsync=False)
         self.setup_gl()
 
         # Clear the screen, to prevent junk on the first frame
@@ -67,13 +74,19 @@ class Engine(object):
         self.camera = Camera(self)
         self.tickers.append(self.camera)
 
-        self.drawers['hud'].append(pyglet.clock.ClockDisplay())
         pyglet.clock.schedule_interval(self.tick, 1.0/60)
 
         while self.setup_hook:
             self.setup_hook.pop().setup()
 
         self.init = True
+
+    def addDrawer(self, obj, where='foreground'):
+        self.drawers[where].append(obj)
+
+    def subscribeMouse(self, obj, events=['press', 'release', 'move', 'drag']):
+        for ev in events:
+            self.mousers[ev].append(obj)
 
     def tick(self, t):
         """
@@ -102,8 +115,6 @@ class Engine(object):
 
             for obj in self.drawers['hud']:
                 obj.draw()
-
-            #ship_stats.text = 'Pos: {0:+.1f}, Vel: {1:+.1f}'.format(ship.pos, ship.vel)
         else:
             for obj in self.drawers['preload']:
                 obj.draw()
@@ -116,11 +127,28 @@ class Engine(object):
     def on_key_release(self, symbol, modifiers):
         self.key_status[symbol] = False
 
-    def on_mouse_press(self, x, y, button, modifers):
+    def on_mouse_press(self, x, y, button, modifiers):
         self.mouse_status[button] = True
+        for obj in self.mousers['press']:
+            try:
+                pos = obj.pos
+            except:
+                pos = Vector()
+            coord = pos + Vector(x, y)
 
-    def on_mouse_release(self, x, y, button, modifers):
+            obj.on_mouse_press(*coord.to('v2t'), button=button,
+                    modifiers=modifiers)
+
+    def on_mouse_release(self, x, y, button, modifiers):
         self.mouse_status[button] = False
+        for obj in self.mousers['release']:
+            try:
+                pos = obj.pos
+            except:
+                pos = Vector()
+            coord = pos + Vector(x, y)
+
+            obj.on_mouse_release(x, y, button, modifiers)
 
     def on_mouse_motion(self, x, y, dx, dy):
         self.mouse_status['x'] = x

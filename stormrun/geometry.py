@@ -27,6 +27,27 @@ class Vector(object):
             self._a = 0
             self._m = 0
 
+    def to(self, type_str, *args, **kwargs):
+        """
+        Returns the vector in another format. Based on pyglet format codes.
+
+        r2f: rectangle, 2, floats. Returns a tuple of 8 elements:
+             (x0, y0, x1, y1, x2, y2, x3, y3). Takes an optional argument,
+             offset=Vector() which will be added to each coordinate.
+        f2t: vertex, 2, tuple. Returns a tuple of 2 elements: (x, y).
+        """
+        def r2f(v, offset=Vector()):
+            return (offset.x, offset.y,
+                    offset.x + v.x, offset.y,
+                    offset.x + v.x, offset.y + v.y,
+                    offset.x, offset.y + v.y)
+
+        def v2t(v):
+            return (v.x, v.y)
+
+        mapper = {'r2f': r2f, 'v2t': v2t}
+        return mapper[type_str](self, *args, **kwargs)
+
     def __add__(self, other):
         return Vector(self.x + other.x, self.y + other.y)
 
